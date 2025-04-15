@@ -14,6 +14,8 @@
       width: 100%;
     }
 
+    
+
     .container {
       display: flex;
       flex-direction: column;
@@ -47,6 +49,31 @@
       margin-top: 20px;
     }
 
+  .text-input {
+  width: 100%; /* Now it fills its flex box */
+  padding: 14px 18px;
+  font-size: 20px;
+  margin-top: 6px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+.input-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  max-width: 900px;
+  margin-bottom: 20px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
     /* Directions styling */
     .direction-step {
       margin-bottom: 10px;
@@ -60,11 +87,17 @@
   <header class="app-header">Plan Your Route</header>
 
   <main class="container">
-    <label class="input-label" for="from">From:</label>
-    <input class="text-input" type="text" id="from" placeholder="Enter starting point (e.g. Majestic)">
-
-    <label class="input-label" for="to">To:</label>
-    <input class="text-input" type="text" id="to" placeholder="Enter destination (e.g. MG Road)">
+    <div class="input-row">
+      <div class="input-group">
+        <label class="input-label" for="from" style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">From:</label>
+        <input class="text-input" type="text" id="from" placeholder="Enter starting point (e.g. Majestic)">
+      </div>
+      <div class="input-group">
+        <label class="input-label" for="to" style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">To:</label>
+        <input class="text-input" type="text" id="to" placeholder="Enter destination (e.g. MG Road)">
+      </div>
+    </div>
+    
 
     <button class="main-btn" onclick="startRoute()">🚍 Start Route</button>
 
