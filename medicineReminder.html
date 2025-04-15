@@ -5,8 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Medicine Reminders</title>
   <link rel="stylesheet" href="css/style.css" />
-
   <style>
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      background-color: #D86F1C;
+      color: white;
+      padding: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .home-btn {
+      font-size: 18px;
+      padding: 6px 12px;
+      background-color: #E4572E;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      margin-right: 16px;
+      cursor: pointer;
+    }
+
     .reminder-form input {
       padding: 12px;
       margin: 10px 5px;
@@ -65,19 +86,13 @@
     }
 
     @keyframes popupFade {
-      from {
-        opacity: 0;
-        transform: translateY(-20px) scale(0.9);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
+      from { opacity: 0; transform: translateY(-20px) scale(0.9); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     @keyframes pulse {
-      0% { box-shadow: 0 0 20px rgba(255, 193, 7, 0.8); }
-      50% { box-shadow: 0 0 40px rgba(255, 193, 7, 1); }
+      0%   { box-shadow: 0 0 20px rgba(255, 193, 7, 0.8); }
+      50%  { box-shadow: 0 0 40px rgba(255, 193, 7, 1); }
       100% { box-shadow: 0 0 20px rgba(255, 193, 7, 0.8); }
     }
 
@@ -114,7 +129,10 @@
 </head>
 <body>
 
-  <header class="app-header">Medicine Reminders</header>
+  <header class="app-header">
+    <button class="home-btn" onclick="location.href='index.html'">🏠 Home</button>
+    Medicine Reminders
+  </header>
 
   <main class="container">
     <div class="reminder-form">
@@ -135,7 +153,6 @@
       <button onclick="closeModal()">Okay</button>
     </div>
   </div>
-  
 
   <audio id="alarmSound" src="assets/alarm.mp3" preload="auto"></audio>
 
@@ -186,16 +203,14 @@
     function showAlarm(message) {
       document.getElementById('alarmMessage').textContent = message;
       document.getElementById('alarmModal').style.display = 'flex';
-
       const sound = document.getElementById('alarmSound');
       sound.currentTime = 0;
       sound.play();
     }
 
     function closeModal() {
-  document.getElementById('alarmModal').style.display = 'none';
-  }
-
+      document.getElementById('alarmModal').style.display = 'none';
+    }
 
     function clearReminders() {
       if (confirm("Are you sure you want to delete all reminders?")) {
@@ -207,16 +222,15 @@
 
     function startReminderChecker() {
       setInterval(() => {
-      const now = new Date();
-      const current = now.toTimeString().slice(0, 5);
-
-      reminders.forEach(reminder => {
-        if (reminder.time === current && !reminder.triggered) {
-          showAlarm(`⏰ Time to take your medicine: ${reminder.medicine}`);
-          reminder.triggered = true; // Mark as already shown
-        }
-      });
-    }, 60000);
+        const now = new Date();
+        const current = now.toTimeString().slice(0, 5);
+        reminders.forEach(reminder => {
+          if (reminder.time === current && !reminder.triggered) {
+            showAlarm(`⏰ Time to take your medicine: ${reminder.medicine}`);
+            reminder.triggered = true;
+          }
+        });
+      }, 60000);
     }
   </script>
 
