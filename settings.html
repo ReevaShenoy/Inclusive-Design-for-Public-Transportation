@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Accessibility Settings</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="orange-bg center">
+  <h2>⚙️ Accessibility Settings</h2>
+
+  <label for="font-size">Font Size:</label>
+  <select id="font-size">
+    <option value="16px">Small</option>
+    <option value="20px">Medium</option>
+    <option value="24px">Large</option>
+  </select>
+
+  <label for="contrast">Color Contrast:</label>
+  <select id="contrast">
+    <option value="orange-bg">Default (Orange)</option>
+    <option value="dark-mode">Dark Mode</option>
+    <option value="high-contrast">High Contrast</option>
+  </select>
+
+  <button onclick="applySettings()">✅ Apply</button>
+
+  <script>
+    function applySettings() {
+      const fontSize = document.getElementById("font-size").value;
+      const contrast = document.getElementById("contrast").value;
+
+      document.body.style.fontSize = fontSize;
+
+      // Reset classes and apply new contrast class
+      document.body.className = `center ${contrast}`;
+    }
+  </script>
+</body>
+</html>
