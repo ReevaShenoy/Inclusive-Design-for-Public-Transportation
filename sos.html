@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SOS</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="orange-bg center">
+  <h2>🚨 Emergency SOS</h2>
+  <p>If you are in an emergency, press the button below to send an alert.</p>
+  <button style="background-color: red;" onclick="sendSOS()">🚨 Send SOS</button>
+
+  <p id="sos-msg"></p>
+
+  <script>
+    function sendSOS() {
+      const msg = document.getElementById("sos-msg");
+      msg.textContent = "📡 SOS signal sent to emergency contact!";
+    }
+  </script>
+</body>
+</html>

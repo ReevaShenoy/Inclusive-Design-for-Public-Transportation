@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Medicine Reminders</title>
+  <link rel="stylesheet" href="css/style.css" />
+
+  <style>
+    .reminder-form input {
+      padding: 12px;
+      margin: 10px 5px;
+      font-size: 18px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      width: 40%;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background-color: #fff3cd;
+      padding: 30px;
+      border-radius: 12px;
+      width: 80%;
+      max-width: 400px;
+      text-align: center;
+      border: 2px solid #ffc107;
+      box-shadow: 0 0 20px rgba(255, 193, 7, 0.8);
+      animation: popupFade 0.4s ease-out, pulse 1s infinite;
+      transform: scale(0.95);
+      transition: transform 0.2s ease;
+    }
+
+    .modal-content h2 {
+      color: #d9534f;
+      font-size: 28px;
+    }
+
+    .modal-content p {
+      font-size: 20px;
+      margin: 20px 0;
+    }
+
+    .modal-content button {
+      padding: 12px 20px;
+      font-size: 18px;
+      background-color: #4A90E2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    @keyframes popupFade {
+      from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 20px rgba(255, 193, 7, 0.8); }
+      50% { box-shadow: 0 0 40px rgba(255, 193, 7, 1); }
+      100% { box-shadow: 0 0 20px rgba(255, 193, 7, 0.8); }
+    }
+
+    .reminder-form button {
+      background-color: #4A90E2;
+      color: white;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .reminder-form button:hover {
+      background-color: #357ABD;
+    }
+
+    #reminderList {
+      margin-top: 30px;
+      text-align: left;
+    }
+
+    #reminderList li {
+      background-color: #fff;
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      color: #333;
+      font-size: 18px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="app-header">Medicine Reminders</header>
+
+  <main class="container">
+    <div class="reminder-form">
+      <input type="text" id="medicine" placeholder="Medicine name" />
+      <input type="time" id="time" />
+      <br />
+      <button onclick="addReminder()">Add Reminder</button>
+      <button onclick="clearReminders()">🗑️ Clear All Reminders</button>
+    </div>
+
+    <ul id="reminderList"></ul>
+  </main>
+
+  <div id="alarmModal" class="modal">
+    <div class="modal-content">
+      <h2>⏰ Medicine Time!</h2>
+      <p id="alarmMessage">It's time to take your medicine.</p>
+      <button onclick="closeModal()">Okay</button>
+    </div>
+  </div>
+  
+
+  <audio id="alarmSound" src="assets/alarm.mp3" preload="auto"></audio>
+
+  <script>
+    let reminders = JSON.parse(localStorage.getItem('reminders')) || [];
+    let reminderCheckStarted = false;
+
+    if (reminders.length > 0) {
+      updateReminderList();
+      startReminderChecker();
+      reminderCheckStarted = true;
+    }
+
+    function addReminder() {
+      const medicine = document.getElementById('medicine').value;
+      const time = document.getElementById('time').value;
+
+      if (!medicine || !time) {
+        alert('Please enter both medicine name and time.');
+        return;
+      }
+
+      reminders.push({ medicine, time, triggered: false });
+      localStorage.setItem('reminders', JSON.stringify(reminders));
+      updateReminderList();
+      showAlarm(`Reminder set for ${medicine} at ${time}`);
+
+      document.getElementById('medicine').value = '';
+      document.getElementById('time').value = '';
+
+      if (!reminderCheckStarted) {
+        startReminderChecker();
+        reminderCheckStarted = true;
+      }
+    }
+
+    function updateReminderList() {
+      const list = document.getElementById('reminderList');
+      list.innerHTML = '';
+
+      reminders.forEach(reminder => {
+        const li = document.createElement('li');
+        li.textContent = `💊 ${reminder.medicine} at ⏰ ${reminder.time}`;
+        list.appendChild(li);
+      });
+    }
+
+    function showAlarm(message) {
+      document.getElementById('alarmMessage').textContent = message;
+      document.getElementById('alarmModal').style.display = 'flex';
+
+      const sound = document.getElementById('alarmSound');
+      sound.currentTime = 0;
+      sound.play();
+    }
+
+    function closeModal() {
+  document.getElementById('alarmModal').style.display = 'none';
+  }
+
+
+    function clearReminders() {
+      if (confirm("Are you sure you want to delete all reminders?")) {
+        reminders = [];
+        localStorage.removeItem('reminders');
+        updateReminderList();
+      }
+    }
+
+    function startReminderChecker() {
+      setInterval(() => {
+      const now = new Date();
+      const current = now.toTimeString().slice(0, 5);
+
+      reminders.forEach(reminder => {
+        if (reminder.time === current && !reminder.triggered) {
+          showAlarm(`⏰ Time to take your medicine: ${reminder.medicine}`);
+          reminder.triggered = true; // Mark as already shown
+        }
+      });
+    }, 60000);
+    }
+  </script>
+
+</body>
+</html>
