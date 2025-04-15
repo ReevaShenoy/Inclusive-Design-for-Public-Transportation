@@ -1,0 +1,58 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #FF9A41;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+  }
+  
+  .app-header {
+    background-color: #D86F1C; /* a deeper orange for contrast */
+    color: white;
+    text-align: center;
+    padding: 24px 0;
+    font-size: 28px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    border-bottom: 4px solid #B35411;
+  }
+  
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    text-align: center;
+  }
+  
+  .main-btn, .sos-btn {
+    display: block;
+    width: 100%;
+    padding: 24px;
+    margin-bottom: 20px;
+    font-size: 22px;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.3s;
+  }
+  
+  .main-btn {
+    background-color: #4A90E2;
+    color: white;
+  }
+  
+  .main-btn:hover {
+    background-color: #357ABD;
+  }
+  
+  .sos-btn {
+    background-color: #E4572E;
+    color: white;
+  }
+  
+  .sos-btn:hover {
+    background-color: #C0392B;
+  }
+  
