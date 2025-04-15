@@ -66,7 +66,6 @@ function startRoute() {
       // Wait until the route is available
       routeControl.on('routesfound', function(event) {
         console.log("Routes found:", event.routes);
-
         if (event.routes.length > 0) {
           const directions = event.routes[0].instructions;
           console.log('Directions:', directions);
@@ -104,5 +103,6 @@ function displayDirections(instructions) {
     stepsList.appendChild(li);
   });
 }
-
 window.onload = initMap;
+
+
