@@ -1,9 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const db = require('.');
-const logger = require('./utils/logger');
-const errorHandler = require('./middleware/errorHandler');
+const { connectDB } = require('./db');
 
 // Create Express app
 const app = express();
@@ -20,14 +18,11 @@ app.use((req, res, next) => {
 });
 
 // Set up routes
-require('./routes/user.routes')(app);
-require('./routes/reminder.routes')(app);
-require('./routes/route.routes')(app);
-require('./routes/sos.routes')(app);
-require('./routes/settings.routes')(app);
-
-// Global error handler
-app.use(errorHandler);
+require('./routes/users')(app);
+require('./routes/reminders')(app);
+require('./routes/routes')(app);
+require('./routes/sos')(app);
+require('./routes/settings')(app);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -45,15 +40,15 @@ app.use((req, res) => {
 });
 
 // Connect to database and start server
-const PORT = process.env.PORT || 8080;
-db.sequelize.sync()
+const PORT = process.env.PORT || 5501;
+connectDB() // Connect to MySQL
   .then(() => {
     app.listen(PORT, () => {
       logger.info(`Server is running on port ${PORT}`);
     });
   })
   .catch(err => {
-    logger.error('Failed to connect to database:', err);
+    logger.error('Failed to start server:', err);
     process.exit(1);
   });
 

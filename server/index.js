@@ -1,7 +1,6 @@
 // models/index.js
 const dbConfig = require('../config/db.config.js');
 const Sequelize = require('sequelize');
-const logger = require('../utils/logger');
 
 // Create Sequelize instance
 const sequelize = new Sequelize(
@@ -18,7 +17,7 @@ const sequelize = new Sequelize(
       acquire: dbConfig.pool.acquire,
       idle: dbConfig.pool.idle
     },
-    logging: msg => logger.debug(msg)
+    logging: msg => console.debug(msg)
   }
 );
 
@@ -28,12 +27,12 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 // Initialize models
-db.users = require('./user.model.js')(sequelize, Sequelize);
-db.sosSettings = require('./sos.model.js')(sequelize, Sequelize);
-db.accessibilitySettings = require('./settings.model.js')(sequelize, Sequelize);
-db.medicineReminders = require('./reminder.model.js')(sequelize, Sequelize);
-db.routes = require('./route.model.js')(sequelize, Sequelize);
-db.sosTriggerLog = require('./sosTrigger.model.js')(sequelize, Sequelize);
+db.users = require('./models/user.js')(sequelize, Sequelize);
+db.sosSettings = require('./models/sosSettings.js')(sequelize, Sequelize);
+db.accessibilitySettings = require('./models/accesibilitySettings.js')(sequelize, Sequelize);
+db.medicineReminders = require('./models/medicineReminder.js')(sequelize, Sequelize);
+db.routes = require('./models/Route.js')(sequelize, Sequelize);
+db.sosTriggerLog = require('./models/sosTriggerLog.js')(sequelize, Sequelize);
 
 // Set up associations
 

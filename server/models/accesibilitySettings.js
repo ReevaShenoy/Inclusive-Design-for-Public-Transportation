@@ -1,13 +1,31 @@
-const mongoose = require('mongoose');
+module.exports = (sequelize, Sequelize) => {
+  const AccessibilitySetting = sequelize.define('AccessibilitySetting', {
+    user_id: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'users', // referencing the users table
+        key: 'user_id',
+      },
+      primaryKey: true
+    },
+    text_size: {
+      type: Sequelize.ENUM('small', 'medium', 'large'),
+      defaultValue: 'medium',
+    },
+    color_theme: {
+      type: Sequelize.STRING,
+      defaultValue: 'warm_orange',
+    },
+    haptic_feedback: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: true,
+    },
+    simplified_ui: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: true,
+    },
+  });
 
-const accessibilitySettingSchema = new mongoose.Schema({
-  user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  text_size: { type: String, enum: ['SMALL', 'MEDIUM', 'LARGE'], default: 'MEDIUM' },
-  high_contrast_mode: { type: Boolean, default: false },
-  haptic_feedback: { type: Boolean, default: false },
-  screen_reader_mode: { type: Boolean, default: false },
-  voice_assistance: { type: Boolean, default: false },
-  updated_at: { type: Date, default: Date.now }
-});
-
-module.exports = mongoose.model('AccessibilitySetting', accessibilitySettingSchema);
+  return AccessibilitySetting;
+};

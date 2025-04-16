@@ -3,7 +3,6 @@ const db = require('..');
 const Route = db.routes;
 const User = db.users;
 const { validateRouteInput } = require('../utils/validators');
-const logger = require('../utils/logger');
 
 // Create and Save a new Route
 exports.create = async (req, res) => {
@@ -38,7 +37,7 @@ exports.create = async (req, res) => {
     
     res.status(201).send(data);
   } catch (err) {
-    logger.error('Error creating route:', err);
+    console.error('Error creating route:', err);
     res.status(500).send({
       message: "Some error occurred while creating the Route."
     });
@@ -57,7 +56,7 @@ exports.findAll = async (req, res) => {
     
     res.send(data);
   } catch (err) {
-    logger.error('Error retrieving routes:', err);
+    console.error('Error retrieving routes:', err);
     res.status(500).send({
       message: "Some error occurred while retrieving routes."
     });
@@ -79,7 +78,7 @@ exports.findFavorites = async (req, res) => {
     
     res.send(data);
   } catch (err) {
-    logger.error('Error retrieving favorite routes:', err);
+    console.error('Error retrieving favorite routes:', err);
     res.status(500).send({
       message: "Some error occurred while retrieving favorite routes."
     });
@@ -106,7 +105,7 @@ exports.findOne = async (req, res) => {
       });
     }
   } catch (err) {
-    logger.error(`Error retrieving route with id=${req.params.id}:`, err);
+    console.error(`Error retrieving route with id=${req.params.id}:`, err);
     res.status(500).send({
       message: "Error retrieving Route with id=" + req.params.id
     });
@@ -143,7 +142,7 @@ exports.update = async (req, res) => {
       });
     }
   } catch (err) {
-    logger.error(`Error updating route with id=${req.params.id}:`, err);
+    console.error(`Error updating route with id=${req.params.id}:`, err);
     res.status(500).send({
       message: "Error updating Route with id=" + req.params.id
     });
@@ -185,7 +184,7 @@ exports.toggleFavorite = async (req, res) => {
       });
     }
   } catch (err) {
-    logger.error(`Error toggling favorite for route with id=${req.params.id}:`, err);
+    console.error(`Error toggling favorite for route with id=${req.params.id}:`, err);
     res.status(500).send({
       message: "Error updating favorite status for Route with id=" + req.params.id
     });
@@ -214,7 +213,7 @@ exports.delete = async (req, res) => {
       });
     }
   } catch (err) {
-    logger.error(`Error deleting route with id=${req.params.id}:`, err);
+    console.error(`Error deleting route with id=${req.params.id}:`, err);
     res.status(500).send({
       message: "Could not delete Route with id=" + req.params.id
     });

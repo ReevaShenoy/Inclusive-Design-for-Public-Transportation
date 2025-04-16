@@ -3,7 +3,6 @@ const db = require('..');
 const Reminder = db.medicineReminders;
 const User = db.users;
 const { validateReminderInput } = require('../utils/validators');
-const logger = require('../utils/logger');
 
 // Create and Save a new Reminder
 exports.create = async (req, res) => {
@@ -30,7 +29,7 @@ exports.create = async (req, res) => {
     
     res.status(201).send(data);
   } catch (err) {
-    logger.error('Error creating reminder:', err);
+    console.error('Error creating reminder:', err);
     res.status(500).send({
       message: "Some error occurred while creating the Reminder."
     });
@@ -46,7 +45,7 @@ exports.findAll = async (req, res) => {
     
     res.send(data);
   } catch (err) {
-    logger.error('Error retrieving reminders:', err);
+    console.error('Error retrieving reminders:', err);
     res.status(500).send({
       message: "Some error occurred while retrieving reminders."
     });
@@ -73,7 +72,7 @@ exports.findOne = async (req, res) => {
       });
     }
   } catch (err) {
-    logger.error(`Error retrieving reminder with id=${req.params.id}:`, err);
+    console.error(`Error retrieving reminder with id=${req.params.id}:`, err);
     res.status(500).send({
       message: "Error retrieving Reminder with id=" + req.params.id
     });
@@ -110,7 +109,7 @@ exports.update = async (req, res) => {
       });
     }
   } catch (err) {
-    logger.error(`Error updating reminder with id=${req.params.id}:`, err);
+    console.error(`Error updating reminder with id=${req.params.id}:`, err);
     res.status(500).send({
       message: "Error updating Reminder with id=" + req.params.id
     });
@@ -139,7 +138,7 @@ exports.delete = async (req, res) => {
       });
     }
   } catch (err) {
-    logger.error(`Error deleting reminder with id=${req.params.id}:`, err);
+    console.error(`Error deleting reminder with id=${req.params.id}:`, err);
     res.status(500).send({
       message: "Could not delete Reminder with id=" + req.params.id
     });
@@ -158,7 +157,7 @@ exports.deleteAll = async (req, res) => {
       message: `${nums} Reminders were deleted successfully!` 
     });
   } catch (err) {
-    logger.error('Error deleting all reminders:', err);
+    console.error('Error deleting all reminders:', err);
     res.status(500).send({
       message: "Some error occurred while removing all reminders."
     });
