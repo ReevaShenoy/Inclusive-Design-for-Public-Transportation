@@ -19,13 +19,16 @@
 
     .home-btn {
       font-size: 18px;
-      padding: 6px 12px;
-      background-color: #E4572E;
+      font-weight: bold;
+      font-family: Arial, Helvetica, sans-serif;
+      padding: 8px 10px;
+      background-color: #9acf5a;
       color: white;
       border: none;
       border-radius: 8px;
       margin-right: 16px;
       cursor: pointer;
+      
     }
 
     .reminder-form input {
@@ -219,7 +222,11 @@
 
     function closeModal() {
   document.getElementById('alarmModal').style.display = 'none';
-  }
+  const sound = document.getElementById('alarmSound');
+  sound.pause();
+  sound.currentTime = 0; // Optional: reset playback to start
+}
+
 
 
     function clearReminders() {
