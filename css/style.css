@@ -25,6 +25,11 @@ body {
     text-align: left;
   }
   
+  .logo{
+    max-width: auto;
+    border-radius: 50px;
+  }
+
   .main-btn, .sos-btn {
     display: block;
     width: 100%;
