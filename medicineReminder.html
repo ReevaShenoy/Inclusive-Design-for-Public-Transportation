@@ -19,16 +19,13 @@
 
     .home-btn {
       font-size: 18px;
-      font-weight: bold;
-      font-family: Arial, Helvetica, sans-serif;
-      padding: 8px 10px;
-      background-color: #9acf5a;
+      padding: 6px 12px;
+      background-color: #E4572E;
       color: white;
       border: none;
       border-radius: 8px;
       margin-right: 16px;
       cursor: pointer;
-      
     }
 
     .reminder-form input {
@@ -133,6 +130,36 @@
       color: #333;
       font-size: 18px;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .delete-btn {
+      background-color: #d9534f;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    
+    .status-message {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      text-align: center;
+      display: none;
+    }
+    
+    .success {
+      background-color: #dff0d8;
+      color: #3c763d;
+    }
+    
+    .error {
+      background-color: #f2dede;
+      color: #a94442;
     }
   </style>
 </head>
@@ -143,8 +170,9 @@
     Medicine Reminders
   </header>
 
-
   <main class="container">
+    <div id="statusMessage" class="status-message"></div>
+    
     <div class="reminder-form">
       <input type="text" id="medicine" placeholder="Medicine name" />
       <input type="time" id="time" />
@@ -156,7 +184,7 @@
     <ul id="reminderList"></ul>
   </main>
 
-  <div id="alarmModal" class="modal">
+  <div id="alarmModal" class="modal" style="display: none;">
     <div class="modal-content">
       <h2>⏰ Medicine Time!</h2>
       <p id="alarmMessage">It's time to take your medicine.</p>
@@ -164,53 +192,139 @@
     </div>
   </div>
 
-
   <audio id="alarmSound" src="assets/alarm.mp3" preload="auto"></audio>
 
+  <script src="js/api-service.js"></script>
   <script>
-    let reminders = JSON.parse(localStorage.getItem('reminders')) || [];
+    // Local reminders array for offline functionality
+    let reminders = [];
     let reminderCheckStarted = false;
 
-    if (reminders.length > 0) {
-      updateReminderList();
+    // Load reminders when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      loadReminders();
       startReminderChecker();
-      reminderCheckStarted = true;
+    });
+
+    // Function to show status messages
+    function showStatusMessage(message, isError = false) {
+      const statusEl = document.getElementById('statusMessage');
+      statusEl.textContent = message;
+      statusEl.className = `status-message ${isError ? 'error' : 'success'}`;
+      statusEl.style.display = 'block';
+      
+      // Hide message after 3 seconds
+      setTimeout(() => {
+        statusEl.style.display = 'none';
+      }, 3000);
     }
 
-    function addReminder() {
+    // Load reminders from API (with offline fallback)
+    async function loadReminders() {
+      try {
+        // Try to get reminders from API
+        if (window.navigator.onLine && window.apiService) {
+          const data = await apiService.reminders.getAll();
+          reminders = data;
+          // Update local storage for offline fallback
+          localStorage.setItem('reminders', JSON.stringify(reminders));
+        } else {
+          // Fallback to local storage if offline
+          reminders = JSON.parse(localStorage.getItem('reminders')) || [];
+        }
+        
+        updateReminderList();
+      } catch (error) {
+        console.error('Error loading reminders:', error);
+        // Fallback to local storage if API fails
+        reminders = JSON.parse(localStorage.getItem('reminders')) || [];
+        updateReminderList();
+      }
+    }
+
+    // Add a new reminder
+    async function addReminder() {
       const medicine = document.getElementById('medicine').value;
       const time = document.getElementById('time').value;
 
       if (!medicine || !time) {
-        alert('Please enter both medicine name and time.');
+        showStatusMessage('Please enter both medicine name and time.', true);
         return;
       }
 
-      reminders.push({ medicine, time, triggered: false });
-      localStorage.setItem('reminders', JSON.stringify(reminders));
-      updateReminderList();
-      showAlarm(`Reminder set for ${medicine} at ${time}`);
+      const newReminder = { 
+        medicine, 
+        time, 
+        recurring: true
+      };
 
-      document.getElementById('medicine').value = '';
-      document.getElementById('time').value = '';
+      try {
+        if (window.navigator.onLine && window.apiService) {
+          // Add to API
+          const savedReminder = await apiService.reminders.create(newReminder);
+          reminders.push(savedReminder);
+        } else {
+          // Generate temporary ID for offline mode
+          newReminder.id = Date.now().toString();
+          newReminder.triggered = false;
+          reminders.push(newReminder);
+          // Save to local storage
+          localStorage.setItem('reminders', JSON.stringify(reminders));
+        }
 
-      if (!reminderCheckStarted) {
-        startReminderChecker();
-        reminderCheckStarted = true;
+        updateReminderList();
+        showStatusMessage(`Reminder set for ${medicine} at ${time}`);
+
+        document.getElementById('medicine').value = '';
+        document.getElementById('time').value = '';
+      } catch (error) {
+        console.error('Error adding reminder:', error);
+        showStatusMessage('Failed to add reminder. Please try again.', true);
       }
     }
 
+    // Update the displayed reminder list
     function updateReminderList() {
       const list = document.getElementById('reminderList');
       list.innerHTML = '';
 
       reminders.forEach(reminder => {
         const li = document.createElement('li');
-        li.textContent = `💊 ${reminder.medicine} at ⏰ ${reminder.time}`;
+        
+        const reminderInfo = document.createElement('span');
+        reminderInfo.textContent = `💊 ${reminder.medicine} at ⏰ ${reminder.time}`;
+        li.appendChild(reminderInfo);
+        
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.textContent = '🗑️';
+        deleteBtn.onclick = () => deleteReminder(reminder.id);
+        li.appendChild(deleteBtn);
+        
         list.appendChild(li);
       });
     }
 
+    // Delete a single reminder
+    async function deleteReminder(id) {
+      try {
+        if (window.navigator.onLine && window.apiService) {
+          await apiService.reminders.delete(id);
+        }
+        
+        // Remove from local array
+        reminders = reminders.filter(r => r.id !== id);
+        localStorage.setItem('reminders', JSON.stringify(reminders));
+        
+        updateReminderList();
+        showStatusMessage('Reminder deleted successfully');
+      } catch (error) {
+        console.error('Error deleting reminder:', error);
+        showStatusMessage('Failed to delete reminder. Please try again.', true);
+      }
+    }
+
+    // Show alarm notification
     function showAlarm(message) {
       document.getElementById('alarmMessage').textContent = message;
       document.getElementById('alarmModal').style.display = 'flex';
@@ -219,37 +333,71 @@
       sound.play();
     }
 
-
+    // Close modal dialog
     function closeModal() {
-  document.getElementById('alarmModal').style.display = 'none';
-  const sound = document.getElementById('alarmSound');
-  sound.pause();
-  sound.currentTime = 0; // Optional: reset playback to start
-}
+      document.getElementById('alarmModal').style.display = 'none';
+    }
 
-
-
-    function clearReminders() {
+    // Clear all reminders
+    async function clearReminders() {
       if (confirm("Are you sure you want to delete all reminders?")) {
-        reminders = [];
-        localStorage.removeItem('reminders');
-        updateReminderList();
+        try {
+          if (window.navigator.onLine && window.apiService) {
+            await apiService.reminders.deleteAll();
+          }
+          
+          reminders = [];
+          localStorage.removeItem('reminders');
+          updateReminderList();
+          showStatusMessage('All reminders deleted successfully');
+        } catch (error) {
+          console.error('Error clearing reminders:', error);
+          showStatusMessage('Failed to clear reminders. Please try again.', true);
+        }
       }
     }
 
+    // Check for reminders that need to be triggered
     function startReminderChecker() {
+      reminderCheckStarted = true;
+      
+      // Check immediately upon loading
+      checkCurrentReminders();
+      
+      // Then check every minute
       setInterval(() => {
+        checkCurrentReminders();
+      }, 60000);
+    }
+    
+    function checkCurrentReminders() {
       const now = new Date();
       const current = now.toTimeString().slice(0, 5);
 
       reminders.forEach(reminder => {
         if (reminder.time === current && !reminder.triggered) {
           showAlarm(`⏰ Time to take your medicine: ${reminder.medicine}`);
-          reminder.triggered = true; // Mark as already shown
+          reminder.triggered = true;
+          
+          // For local storage only (server handles this differently)
+          localStorage.setItem('reminders', JSON.stringify(reminders));
         }
       });
-    }, 60000);
     }
+    
+    // Reset triggered status at midnight
+    function resetTriggeredStatus() {
+      const now = new Date();
+      if (now.getHours() === 0 && now.getMinutes() === 0) {
+        reminders.forEach(reminder => {
+          reminder.triggered = false;
+        });
+        localStorage.setItem('reminders', JSON.stringify(reminders));
+      }
+    }
+    
+    // Check for midnight reset every minute
+    setInterval(resetTriggeredStatus, 60000);
   </script>
 
 </body>
