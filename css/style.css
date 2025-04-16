@@ -24,11 +24,7 @@ body {
     padding: 40px 20px;
     text-align: left;
   }
-  
-  .logo{
-    max-width: auto;
-    border-radius: 50px;
-  }
+ 
 
   .main-btn, .sos-btn {
     display: block;
