@@ -14,8 +14,6 @@
       width: 100%;
     }
 
-    
-
     .container {
       display: flex;
       flex-direction: column;
@@ -40,7 +38,6 @@
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
 
-    /* Loading indicator */
     #loadingIndicator {
       display: none;
       font-size: 20px;
@@ -74,15 +71,35 @@
   flex: 1;
 }
 
-    /* Directions styling */
     .direction-step {
       margin-bottom: 10px;
       font-size: 16px;
     }
+
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      background-color: #D86F1C;
+      color: white;
+      padding: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .home-btn {
+      font-size: 18px;
+      padding: 6px 12px;
+      background-color: #E4572E;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      margin-right: 16px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-
 
   <header class="app-header">Plan Your Route</header>
 
@@ -104,16 +121,31 @@
     <!-- Loading indicator -->
     <div id="loadingIndicator">Loading route...</div>
     <!-- Map container -->
+
+  <header class="app-header">
+    <button class="home-btn" onclick="location.href='index.html'">🏠 Home</button>
+    Plan Your Route
+  </header>
+
+  <main class="container">
+    <label class="input-label" for="from">From:</label>
+    <input class="text-input" type="text" id="from" placeholder="Enter starting point (e.g. Majestic)">
+
+    <label class="input-label" for="to">To:</label>
+    <input class="text-input" type="text" id="to" placeholder="Enter destination (e.g. MG Road)">
+
+    <button class="main-btn" onclick="startRoute()">🚍 Start Route</button>
+
+    <div id="loadingIndicator">Loading route...</div>
+
+
     <div class="map-container">
       <div id="map"></div>
     </div>
 
-    <!-- Directions container -->
     <div id="directions" class="directions-container">
       <h3>Directions</h3>
-      <ul id="direction-steps">
-        <!-- Directions steps will be inserted here dynamically -->
-      </ul>
+      <ul id="direction-steps"></ul>
     </div>
   </main>
 

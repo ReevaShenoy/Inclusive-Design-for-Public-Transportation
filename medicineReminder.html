@@ -5,8 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Medicine Reminders</title>
   <link rel="stylesheet" href="css/style.css" />
-
   <style>
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      background-color: #D86F1C;
+      color: white;
+      padding: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .home-btn {
+      font-size: 18px;
+      padding: 6px 12px;
+      background-color: #E4572E;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      margin-right: 16px;
+      cursor: pointer;
+    }
+
     .reminder-form input {
       padding: 12px;
       margin: 10px 5px;
@@ -114,7 +135,11 @@
 </head>
 <body>
 
-  <header class="app-header">Medicine Reminders</header>
+  <header class="app-header">
+    <button class="home-btn" onclick="location.href='index.html'">🏠 Home</button>
+    Medicine Reminders
+  </header>
+
 
   <main class="container">
     <div class="reminder-form">
@@ -135,7 +160,7 @@
       <button onclick="closeModal()">Okay</button>
     </div>
   </div>
-  
+
 
   <audio id="alarmSound" src="assets/alarm.mp3" preload="auto"></audio>
 
@@ -186,11 +211,11 @@
     function showAlarm(message) {
       document.getElementById('alarmMessage').textContent = message;
       document.getElementById('alarmModal').style.display = 'flex';
-
       const sound = document.getElementById('alarmSound');
       sound.currentTime = 0;
       sound.play();
     }
+
 
     function closeModal() {
   document.getElementById('alarmModal').style.display = 'none';
