@@ -46,6 +46,31 @@
       margin-top: 20px;
     }
 
+  .text-input {
+  width: 100%; /* Now it fills its flex box */
+  padding: 14px 18px;
+  font-size: 20px;
+  margin-top: 6px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+.input-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  max-width: 900px;
+  margin-bottom: 20px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
     .direction-step {
       margin-bottom: 10px;
       font-size: 16px;
@@ -76,6 +101,27 @@
 </head>
 <body>
 
+  <header class="app-header">Plan Your Route</header>
+
+  <main class="container">
+    <div class="input-row">
+      <div class="input-group">
+        <label class="input-label" for="from" style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">From:</label>
+        <input class="text-input" type="text" id="from" placeholder="Enter starting point (e.g. Majestic)">
+      </div>
+      <div class="input-group">
+        <label class="input-label" for="to" style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">To:</label>
+        <input class="text-input" type="text" id="to" placeholder="Enter destination (e.g. MG Road)">
+      </div>
+    </div>
+    
+
+    <button class="main-btn" onclick="startRoute()">🚍 Start Route</button>
+
+    <!-- Loading indicator -->
+    <div id="loadingIndicator">Loading route...</div>
+    <!-- Map container -->
+
   <header class="app-header">
     <button class="home-btn" onclick="location.href='index.html'">🏠 Home</button>
     Plan Your Route
@@ -92,6 +138,7 @@
 
     <div id="loadingIndicator">Loading route...</div>
 
+
     <div class="map-container">
       <div id="map"></div>
     </div>
@@ -104,4 +151,7 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-  <script src="https://unpkg.com/leaflet-routing
+  <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

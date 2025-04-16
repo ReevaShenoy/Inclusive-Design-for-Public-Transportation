@@ -86,13 +86,19 @@
     }
 
     @keyframes popupFade {
-      from { opacity: 0; transform: translateY(-20px) scale(0.9); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
+      from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     @keyframes pulse {
-      0%   { box-shadow: 0 0 20px rgba(255, 193, 7, 0.8); }
-      50%  { box-shadow: 0 0 40px rgba(255, 193, 7, 1); }
+      0% { box-shadow: 0 0 20px rgba(255, 193, 7, 0.8); }
+      50% { box-shadow: 0 0 40px rgba(255, 193, 7, 1); }
       100% { box-shadow: 0 0 20px rgba(255, 193, 7, 0.8); }
     }
 
@@ -134,6 +140,7 @@
     Medicine Reminders
   </header>
 
+
   <main class="container">
     <div class="reminder-form">
       <input type="text" id="medicine" placeholder="Medicine name" />
@@ -153,6 +160,7 @@
       <button onclick="closeModal()">Okay</button>
     </div>
   </div>
+
 
   <audio id="alarmSound" src="assets/alarm.mp3" preload="auto"></audio>
 
@@ -208,9 +216,11 @@
       sound.play();
     }
 
+
     function closeModal() {
-      document.getElementById('alarmModal').style.display = 'none';
-    }
+  document.getElementById('alarmModal').style.display = 'none';
+  }
+
 
     function clearReminders() {
       if (confirm("Are you sure you want to delete all reminders?")) {
@@ -222,15 +232,16 @@
 
     function startReminderChecker() {
       setInterval(() => {
-        const now = new Date();
-        const current = now.toTimeString().slice(0, 5);
-        reminders.forEach(reminder => {
-          if (reminder.time === current && !reminder.triggered) {
-            showAlarm(`⏰ Time to take your medicine: ${reminder.medicine}`);
-            reminder.triggered = true;
-          }
-        });
-      }, 60000);
+      const now = new Date();
+      const current = now.toTimeString().slice(0, 5);
+
+      reminders.forEach(reminder => {
+        if (reminder.time === current && !reminder.triggered) {
+          showAlarm(`⏰ Time to take your medicine: ${reminder.medicine}`);
+          reminder.triggered = true; // Mark as already shown
+        }
+      });
+    }, 60000);
     }
   </script>
 
