@@ -1,5 +1,5 @@
 // models/index.js
-const dbConfig = require('./config/db.config.js');
+const dbConfig = require('../config/db.config.js');
 const Sequelize = require('sequelize');
 const logger = require('../utils/logger');
 
