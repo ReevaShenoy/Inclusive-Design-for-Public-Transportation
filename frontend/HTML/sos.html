@@ -2,21 +2,65 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>SOS</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SOS - Emergency Help</title>
+  <link rel="stylesheet" href="../CSS/style.css" />
 </head>
-<body class="orange-bg center">
-  <h2>🚨 Emergency SOS</h2>
-  <p>If you are in an emergency, press the button below to send an alert.</p>
-  <button style="background-color: red;" onclick="sendSOS()">🚨 Send SOS</button>
+<body>
 
-  <p id="sos-msg"></p>
+  <header class="app-header">
+    🚨 Emergency SOS
+  </header>
+
+  <main class="container">
+    <p style="font-size: 18px; margin-bottom: 30px;">
+      If you're in an emergency, press the button below to send your location to nearby authorities or caregivers.
+    </p>
+
+    <div class="sos-container">
+      <button id="sosButton">🚨 SEND SOS</button>
+    </div>
+
+    <p id="sosStatus" style="margin-top: 20px; font-size: 18px; color: #d9534f;"></p>
+  </main>
 
   <script>
-    function sendSOS() {
-      const msg = document.getElementById("sos-msg");
-      msg.textContent = "📡 SOS signal sent to emergency contact!";
-    }
+    document.getElementById("sosButton").addEventListener("click", () => {
+      const status = document.getElementById("sosStatus");
+      status.textContent = "⏳ Sending location...";
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+
+          // Text-to-speech confirmation
+          const utter = new SpeechSynthesisUtterance("Emergency alert sent with your location.");
+          speechSynthesis.speak(utter);
+
+          // Show status
+          status.innerHTML = `✅ SOS sent!<br>Location: ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+
+          // 🚀 Send to backend or log it (example stub):
+          /*
+          fetch('/api/sos-alert', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ lat, lon, timestamp: new Date().toISOString() })
+          })
+          .then(res => res.json())
+          .then(data => console.log('SOS logged:', data))
+          .catch(err => console.error('SOS failed:', err));
+          */
+
+        }, () => {
+          status.textContent = "⚠️ Failed to get location. Please enable GPS.";
+        });
+      } else {
+        status.textContent = "⚠️ Geolocation not supported in this browser.";
+      }
+    });
   </script>
+
 </body>
 </html>

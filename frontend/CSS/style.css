@@ -24,6 +24,41 @@ body {
     padding: 40px 20px;
     text-align: left;
   }
+
+  .sos-container {
+    margin-top: 30px;
+    text-align: center;
+  }
+  
+  #sosButton {
+    background-color: #e60000;
+    color: white;
+    padding: 16px 32px;
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    animation: pulse 1.5s infinite;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
+  }
+  
+  #sosButton:hover {
+    background-color: #cc0000;
+  }
+  
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.6);
+    }
+    70% {
+      box-shadow: 0 0 0 20px rgba(255, 0, 0, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+    }
+  }
+  
  
 
   .main-btn, .sos-btn {
