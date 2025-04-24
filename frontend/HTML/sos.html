@@ -6,12 +6,68 @@
   <title>SOS - Emergency Help</title>
   <link rel="stylesheet" href="../CSS/style.css" />
 </head>
+<style>
+
+.app-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  background-color: #E8B86D;
+  color: #333;
+  border-bottom: 4px solid #CEDF9F;
+  height: 70px;
+}
+
+.header-left {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.header-title {
+  flex: 2;
+  text-align: center;
+  font-size: 28px;
+}
+
+.home-btn {
+  position: relative;
+  z-index: 2;
+  font-size: 18px;
+  padding: 10px 18px;
+  background-color: #A1D6B2;
+  color: #333;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.home-btn:hover,
+.home-btn:focus {
+  background-color: #90c8a2;
+  outline: 3px solid #444;
+}
+
+.header-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 28px;
+  font-weight: bold;
+  z-index: 1;
+}
+</style>
 <body>
 
   <header class="app-header">
-    🚨 Emergency SOS
+    <button class="home-btn" onclick="location.href='index.html'" aria-label="Go to Home Page">🏠 Home</button>
+    <div class="header-title">🚨 Emergency SOS</div>
   </header>
-
+  
+  
   <main class="container">
     <p style="font-size: 18px; margin-bottom: 30px;">
       If you're in an emergency, press the button below to send your location to nearby authorities or caregivers.
@@ -41,17 +97,6 @@
           // Show status
           status.innerHTML = `✅ SOS sent!<br>Location: ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
 
-          // 🚀 Send to backend or log it (example stub):
-          /*
-          fetch('/api/sos-alert', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ lat, lon, timestamp: new Date().toISOString() })
-          })
-          .then(res => res.json())
-          .then(data => console.log('SOS logged:', data))
-          .catch(err => console.error('SOS failed:', err));
-          */
 
         }, () => {
           status.textContent = "⚠️ Failed to get location. Please enable GPS.";

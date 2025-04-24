@@ -6,26 +6,49 @@
   <title>Medicine Reminders</title>
   <link rel="stylesheet" href="../CSS/style.css" />
   <style>
-    .app-header {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      background-color: #E8B86D;
-      color: white;
-      padding: 20px;
-      font-size: 24px;
-      font-weight: bold;
-    }
+  
+  .app-header {
+    display: flex;
+    position: relative;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 20px;
+    background-color: #E8B86D;/* orange for medicine reminder */
+    color: #333;
+    border-bottom: 4px solid #CEDF9F;
+    height: 70px;
+    gap: 20px;
+  }
 
     .home-btn {
+      position: relative;
+      z-index: 2;
       font-size: 18px;
-      padding: 6px 12px;
-      background-color: #90d261;
-      color: white;
+      padding: 10px 18px;
+      background-color: #A1D6B2;
+      color: #333;
       border: none;
-      border-radius: 8px;
-      margin-right: 16px;
+      border-radius: 10px;
       cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+      margin-right: 16px;
+    }
+
+      .home-btn:hover,
+      .home-btn:focus {
+        background-color: #A1D6B2;
+        outline: 3px solid #000000;
+      }
+
+      .header-title {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 26px;
+      font-weight: bold;
+      z-index: 1;
+      white-space: nowrap;
     }
 
     .reminder-form input {
@@ -102,11 +125,47 @@
       100% { box-shadow: 0 0 20px rgba(255, 193, 7, 0.8); }
     }
 
+        .container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 0 20px;
+      text-align: center;
+    }
+
+    .reminder-card {
+      background-color: #fffdf3;
+      border-radius: 16px;
+      padding: 30px 20px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+      margin-bottom: 30px;
+      border: 2px solid #f8e8c2;
+    }
+
+    .reminder-card h2 {
+      margin-bottom: 20px;
+      color: #d86f1c;
+      font-size: 24px;
+    }
+
+    .reminder-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .reminder-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      align-items: center;
+    }
+
     .reminder-form button {
       background-color: #4A90E2;
+      width: 100%;
+      max-width: 300px;
+      box-sizing: border-box;
       color: white;
-      padding: 14px 20px;
-      margin: 10px 5px;
       border: none;
       border-radius: 10px;
       font-size: 18px;
@@ -118,17 +177,48 @@
       background-color: #357ABD;
     }
 
+    .reminder-form input,
+    .reminder-form button {
+      width: 100%;
+      max-width: 320px;
+      padding: 14px;
+      font-size: 18px;
+      border-radius: 10px;
+      box-sizing: border-box;
+    }
+
+    .reminder-form button {
+      border: none;
+      background-color: #4A90E2;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .reminder-form input {
+      border: 1px solid #ccc;
+    }
+
+    .reminder-form button:hover {
+      background-color: #357ABD;
+    }
+
     #reminderList {
-      margin-top: 30px;
-      text-align: left;
+      padding: 0;
+      list-style-type: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
     }
 
     #reminderList li {
+      width: 100%;
+      max-width: 500px;
       background-color: #fff;
-      padding: 12px 16px;
-      margin-bottom: 10px;
-      border-radius: 10px;
-      color: #333;
+      padding: 14px 18px;
+      border-radius: 12px;
       font-size: 18px;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
       display: flex;
@@ -136,12 +226,12 @@
       align-items: center;
     }
     
-    .delete-btn {
+        .delete-btn {
       background-color: #d9534f;
       color: white;
       border: none;
-      border-radius: 5px;
-      padding: 5px 10px;
+      border-radius: 6px;
+      padding: 6px 10px;
       cursor: pointer;
     }
     
@@ -167,23 +257,28 @@
 <body>
 
   <header class="app-header">
-    <button class="home-btn" onclick="location.href='index.html'">🏠 Home</button>
-    Medicine Reminders
+    <button class="home-btn" onclick="location.href='index.html'" aria-label="Go to Home Page">🏠 Home</button>
+    <div class="header-title">💊 Medicine Reminders</div>
   </header>
+  
 
   <main class="container">
     <div id="statusMessage" class="status-message"></div>
-    
-    <div class="reminder-form">
-      <input type="text" id="medicine" placeholder="Medicine name" />
-      <input type="time" id="time" />
-      <br />
-      <button onclick="addReminder()">Add Reminder</button>
-      <button onclick="clearReminders()">🗑️ Clear All Reminders</button>
-    </div>
-
+  
+    <section class="reminder-card">
+      <h2>Set a Medicine Reminder</h2>
+      <form class="reminder-form" onsubmit="event.preventDefault(); addReminder();">
+        <input type="text" id="medicine" placeholder="Medicine name" required />
+        <input type="time" id="time" required />
+        <button type="submit">➕ Add Reminder</button>
+        <button type="button" onclick="clearReminders()">🗑️ Clear All</button>
+      </form>
+    </section>
+  
     <ul id="reminderList"></ul>
   </main>
+  
+  
 
   <div id="alarmModal" class="modal" style="display: none;">
     <div class="modal-content">

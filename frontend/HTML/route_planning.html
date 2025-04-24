@@ -7,6 +7,32 @@
   <link rel="stylesheet" href="../CSS/style.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
+
+    .app-header {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 24px;
+      font-size: 32px;
+      font-weight: bold;
+      background-color: #E8B86D; /* consistent orange tone */
+      color: #333;
+      border-bottom: 4px solid #CEDF9F;
+      height: 70px;
+      gap: 20px;
+    }
+
+
+      .header-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 26px;
+    font-weight: bold;
+    z-index: 1;
+    white-space: nowrap;
+  }
     #map {
       height: 220px;
       border-radius: 12px;
@@ -46,66 +72,66 @@
       margin-top: 20px;
     }
 
-  .text-input {
-  width: 100%; /* Now it fills its flex box */
-  padding: 14px 18px;
-  font-size: 20px;
-  margin-top: 6px;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  box-sizing: border-box;
-}
+    .text-input {
+    width: 100%; /* Now it fills its flex box */
+    padding: 14px 18px;
+    font-size: 20px;
+    margin-top: 6px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    box-sizing: border-box;
+  }
 
-.input-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  width: 100%;
-  max-width: 900px;
-  margin-bottom: 20px;
-}
+  .input-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+    max-width: 900px;
+    margin-bottom: 20px;
+  }
 
-.input-group {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
 
     .direction-step {
       margin-bottom: 10px;
       font-size: 16px;
     }
 
-    .app-header {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      background-color: #E8B86D;
-      color: white;
-      padding: 20px;
-      font-size: 24px;
-      font-weight: bold;
-    }
 
     .home-btn {
-      font-size: 18px;
-      padding: 6px 12px;
-      background-color: #90d261;
-      color: white;
-      font-weight: bold;
-      border: none;
-      border-radius: 8px;
-      margin-right: 16px;
-      cursor: pointer;
-    }
+  position: relative;
+  z-index: 2;
+  font-size: 18px;
+  padding: 10px 18px;
+  background-color: #A1D6B2;
+  color: #333;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  margin-right: 16px;
+}
+
+
+.home-btn:hover,
+.home-btn:focus {
+  background-color: #90c8a2;
+  outline: 3px solid #444;
+}
   </style>
 </head>
 <body>
 
   <header class="app-header">
-    <button class="home-btn" onclick="location.href='index.html'">🏠 Home</button>
-    Plan Your Route
-  </header>
+    <button class="home-btn" onclick="location.href='index.html'" aria-label="Go to Home Page">🏠 Home</button>
+    <div class="header-title">🗺️ Plan Your Route</div>
+  </header>  
 
   <main class="container">
     <div class="input-row">
