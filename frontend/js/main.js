@@ -5,6 +5,8 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19
 }).addTo(map);
 
+map.scrollWheelZoom.enable(); // Ensure scroll is enabled
+
 const fromInput = document.getElementById('from');
 const toInput = document.getElementById('to');
 
@@ -57,6 +59,29 @@ function startRoute() {
       L.latLng(toLat, toLon)
     ],
     routeWhileDragging: false,
-    show: false
+    show: false,
+    createMarker: () => null
   }).addTo(map);
+
+  control.on('routesfound', function(e) {
+    const stepsEl = document.getElementById("direction-steps");
+    stepsEl.innerHTML = '';
+
+    const route = e.routes[0];
+
+    route.instructions?.forEach(step => {
+      const li = document.createElement('li');
+      li.textContent = step.text;
+      li.className = 'direction-step';
+      stepsEl.appendChild(li);
+    });
+
+    // fallback if instructions not available
+    if (!route.instructions && route.summary) {
+      const li = document.createElement('li');
+      li.textContent = `Total distance: ${route.summary.totalDistance / 1000} km, Time: ${Math.round(route.summary.totalTime / 60)} mins`;
+      li.className = 'direction-step';
+      stepsEl.appendChild(li);
+    }
+  });
 }
