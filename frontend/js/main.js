@@ -1,11 +1,11 @@
 let map = L.map('map').setView([12.9716, 77.5946], 13);
 let control;
+let currentStepIndex = 0;
+let activeRouteInstructions = [];
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19
 }).addTo(map);
-
-map.scrollWheelZoom.enable(); // Ensure scroll is enabled
 
 const fromInput = document.getElementById('from');
 const toInput = document.getElementById('to');
@@ -40,6 +40,12 @@ function setupAutocomplete(inputElement) {
 setupAutocomplete(fromInput);
 setupAutocomplete(toInput);
 
+function speak(text) {
+  const utterance = new SpeechSynthesisUtterance(text);
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utterance);
+}
+
 function startRoute() {
   const fromLat = fromInput.dataset.lat;
   const fromLon = fromInput.dataset.lon;
@@ -59,29 +65,61 @@ function startRoute() {
       L.latLng(toLat, toLon)
     ],
     routeWhileDragging: false,
-    show: false,
-    createMarker: () => null
+    show: false
   }).addTo(map);
 
   control.on('routesfound', function(e) {
     const stepsEl = document.getElementById("direction-steps");
     stepsEl.innerHTML = '';
+    activeRouteInstructions = [];
+    currentStepIndex = 0;
 
     const route = e.routes[0];
+    const instructions = [];
 
-    route.instructions?.forEach(step => {
+    route.instructions.forEach((inst, i) => {
+      const latlng = route.coordinates[inst.index];
+      instructions.push({
+        text: inst.text,
+        lat: latlng.lat,
+        lng: latlng.lng
+      });
+
       const li = document.createElement('li');
-      li.textContent = step.text;
+      li.textContent = inst.text;
       li.className = 'direction-step';
       stepsEl.appendChild(li);
     });
 
-    // fallback if instructions not available
-    if (!route.instructions && route.summary) {
-      const li = document.createElement('li');
-      li.textContent = `Total distance: ${route.summary.totalDistance / 1000} km, Time: ${Math.round(route.summary.totalTime / 60)} mins`;
-      li.className = 'direction-step';
-      stepsEl.appendChild(li);
-    }
+    activeRouteInstructions = instructions;
   });
+}
+
+// 🔄 Real-time navigation
+navigator.geolocation.watchPosition(onLocationUpdate, console.error, {
+  enableHighAccuracy: true,
+  maximumAge: 1000,
+  timeout: 10000
+});
+
+function onLocationUpdate(position) {
+  if (!activeRouteInstructions.length) return;
+
+  const userLatLng = L.latLng(position.coords.latitude, position.coords.longitude);
+  const nextStep = activeRouteInstructions[currentStepIndex];
+
+  if (!nextStep) return;
+
+  const stepLatLng = L.latLng(nextStep.lat, nextStep.lng);
+  const distance = userLatLng.distanceTo(stepLatLng);
+
+  if (distance < 50) {
+    speak(nextStep.text);
+    currentStepIndex++;
+
+    if (currentStepIndex >= activeRouteInstructions.length) {
+      speak("You have reached your destination.");
+      activeRouteInstructions = [];
+    }
+  }
 }
